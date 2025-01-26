@@ -1,97 +1,114 @@
-import React, { useRef } from 'react';
-import { auth } from '../../.firebase/firebase.config';
-import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useRef, useState } from 'react';
 
 const Login = () => {
+  let email = useRef();
+  let password = useRef();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-let email = useRef();
-let password = useRef();
-const navigate = useNavigate()
+  const loginUser = (e) => {
+    e.preventDefault(); // Prevent form submission to keep the page from refreshing
 
+    // Reset any previous errors
+    setError('');
 
-const LoginUser = (e)=>{
-e.preventDefault();
+    // Validate if both fields are filled
+    if (!email.current.value || !password.current.value) {
+      setError('Both fields are required');
+      return;
+    }
 
-signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    console.log(user);
-    
-    navigate('/')
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-  });
+    // Validate email format using regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email.current.value)) {
+      setError('Please enter a valid email');
+      return;
+    }
 
+    // Simulate loading and form submission
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      console.log('Email:', email.current.value);
+      console.log('Password:', password.current.value);
 
-}
-
-
+      // Clear the input fields after submission
+      email.current.value = '';
+      password.current.value = '';
+    }, 2000); // Simulate a 2-second delay for form submission
+  };
 
   return (
-    <>
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md p-4 bg-white rounded-lg shadow-lg mt-10">
-     
-     <form>     <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg mt-10 space-y-4">
+        <form onSubmit={loginUser}>
+          {/* Header */}
+          <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
+
+          {/* Error Message */}
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           {/* Email Input */}
-          <label className="input input-bordered flex items-center gap-2 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              className="h-4 w-4 opacity-70"
-            >
-              <path
-                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z"
-              />
-              <path
-                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z"
-              />
-            </svg>
-            <input ref={email}
-              type="text"
-              className="grow p-2 border border-gray-300 rounded-md"
-              placeholder="Email"
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600">Email</label>
+            <input
+              ref={email}
+              type="email"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your email"
             />
-          </label>
+          </div>
 
           {/* Password Input */}
-          <label className="input input-bordered flex items-center gap-2 mb-6">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              className="h-4 w-4 opacity-70"
-            >
-              <path
-                fillRule="evenodd"
-                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <input ref={password}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-600">Password</label>
+            <input
+              ref={password}
               type="password"
-              className="grow p-2 border border-gray-300 rounded-md"
-              placeholder="Password"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your password"
             />
-          </label>
+          </div>
 
-          {/* Login Button */}
-          <button onClick={LoginUser}
-            className= "w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition"
+          {/* Register Link */}
+          <p className="text-sm text-gray-600">
+            Don't have an account?{' '}
+            <a href="/register" className="text-blue-500 hover:underline">
+              Register here
+            </a>
+          </p>
+
+          {/* Submit Button */}
+          <button
+            className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-500 mt-4"
             type="submit"
+            disabled={loading}
           >
-            Login
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg
+                  className="w-5 h-5 animate-spin mr-3"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 4v1h16V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"
+                  />
+                </svg>
+                Loading...
+              </span>
+            ) : (
+              'Login'
+            )}
           </button>
-          </form>
-        </div>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 

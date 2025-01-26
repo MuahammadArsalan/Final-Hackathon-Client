@@ -6,7 +6,9 @@ import Layout from '../Layout.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './Pages/Home.jsx'
 import Login from './Pages/Login.jsx'
-import Register from './Pages/Register.jsx'
+import AdminDash from './Pages/AdminDash.jsx'
+import Reception from './Pages/Reception.jsx'
+import Register from './Pages/Home.jsx'
 
 
 
@@ -28,7 +30,14 @@ element:<Login/>
 path:"register",
 element:<Register/>
     },
-
+{
+    path:"dashboard1",
+    element:<AdminDash></AdminDash>
+},
+{
+    path:"dashboard2",
+    element:<Reception ></Reception >
+}
    ]
   }
 ])
