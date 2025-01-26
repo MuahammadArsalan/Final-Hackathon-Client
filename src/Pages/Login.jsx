@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  let navigate =  useNavigate()
   let email = useRef();
   let password = useRef();
   const [error, setError] = useState('');
@@ -29,6 +31,7 @@ const Login = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      navigate('/dashboard1')
       console.log('Email:', email.current.value);
       console.log('Password:', password.current.value);
 
@@ -73,7 +76,7 @@ const Login = () => {
           {/* Register Link */}
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <a href="/register" className="text-blue-500 hover:underline">
+            <a href="register" className="text-blue-500 hover:underline">
               Register here
             </a>
           </p>
